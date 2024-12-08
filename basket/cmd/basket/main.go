@@ -5,6 +5,7 @@ import (
 	"github.com/hoangkhoachau/MicroserviceShop/basket/config"
 	_ "github.com/hoangkhoachau/MicroserviceShop/basket/docs"
 	"github.com/hoangkhoachau/MicroserviceShop/basket/internal/factories"
+	"github.com/hoangkhoachau/MicroserviceShop/basket/registration"
 )
 
 // @title Basket Service Api
@@ -23,6 +24,8 @@ func main() {
 	repositoryFactory := factories.NewRepositoryFactory(appConfig, *connectionFactory)
 	eventBusFactory := factories.NewEventBusFactory(systemConfig, queuesConfig, *connectionFactory, *repositoryFactory)
 	serviceFactory := factories.NewServiceFactory(*repositoryFactory, *eventBusFactory)
+	registationFactory := registration.NewRegistrationFactory(systemConfig)
+	registationFactory.GetRegistrationService().Register()
 	apiFactory := api.NewApiFactory(systemConfig, *serviceFactory)
 	eventBusFactory.GetEventBus().Subscribe()
 	apiFactory.GetApi().Start()

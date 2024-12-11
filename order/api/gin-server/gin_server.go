@@ -8,6 +8,7 @@ import (
 	"github.com/sirupsen/logrus"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/hoangkhoachau/MicroserviceShop/order/api/gin-server/middleware"
 	"github.com/hoangkhoachau/MicroserviceShop/order/config"
 	"github.com/hoangkhoachau/MicroserviceShop/order/internal/factories"
 )
@@ -51,7 +52,7 @@ func (g *GinServer) generateSwagger() *GinServer {
 func (g *GinServer) generateOrderGroup() *GinServer {
 	productApi := NewOrderApi(g.serviceFactory.GetOrderService(), g.logger)
 	routerGroup := g.router.Group("orders")
-	routerGroup.GET("/:userId", productApi.GetOrderByUserId)
+	routerGroup.GET("/:userId", middleware.Authorization("customer"), productApi.GetOrderByUserId)
 	routerGroup.PUT("/:id/complete", productApi.SetStatusOrderCompleted)
 	return g
 }

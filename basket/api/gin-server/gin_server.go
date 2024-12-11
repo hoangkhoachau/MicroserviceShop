@@ -9,6 +9,7 @@ import (
 	"github.com/sirupsen/logrus"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/hoangkhoachau/MicroserviceShop/basket/api/gin-server/middleware"
 	"github.com/hoangkhoachau/MicroserviceShop/basket/config"
 	"github.com/hoangkhoachau/MicroserviceShop/basket/internal/factories"
 )
@@ -58,9 +59,9 @@ func (g *GinServer) generateBasketGroup() *GinServer {
 
 	routerGroup := g.router.Group("baskets")
 
-	routerGroup.GET("/:userId", basketApi.GetBasketByUserID)
-	routerGroup.POST("/addProduct", basketApi.AddProductToBasket)
-	routerGroup.PUT("/:userId/verify", basketApi.VerifyBasketByUserId)
+	routerGroup.GET("/:userId", middleware.Authorization("customer", "admin"), basketApi.GetBasketByUserID)
+	routerGroup.POST("/addProduct", middleware.Authorization("customer"), basketApi.AddProductToBasket)
+	routerGroup.PUT("/:userId/verify", middleware.Authorization("customer"), basketApi.VerifyBasketByUserId)
 	return g
 }
 
